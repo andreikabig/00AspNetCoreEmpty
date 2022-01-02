@@ -99,8 +99,11 @@ var app = builder.Build();
 
     ПРИМЕЧАНИЕ: НЕ ПЕРЕДАЕТ ЗАПРОС НА ОБРАБОТКУ ПО КОНВЕЙЕРУ! 
 */
-app.Run(async (context) => await context.Response.WriteAsync("Welcome to It-school Ruby on Brain!"));
 
+// app.Run(async (context) => await context.Response.WriteAsync("Welcome to It-school Ruby on Brain!"));
+
+async Task HandleRequst(HttpContext context) => await context.Response.WriteAsync("Welcome to It-school Ruby on Brain!");
+app.Run(HandleRequst);  // Добавление компонента middleware с помощью отдельного метода
 
 // Запуск приложения - метод .Run()
 app.Run();
