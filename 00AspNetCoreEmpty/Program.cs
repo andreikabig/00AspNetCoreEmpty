@@ -77,15 +77,6 @@ var app = builder.Build();
     
  */
 
-/*
- МАРШРУТИЗАЦИЯ ПРИЛОЖЕНИЯ
- ------------------------
- Метод MapGet():
-    
-    Параметры:
-        * маршрут
-        * метод обработки запроса
- */
 
 // Добавление встроенного компонента middleware
 // app.UseWelcomePage();
@@ -102,8 +93,24 @@ var app = builder.Build();
 
 // app.Run(async (context) => await context.Response.WriteAsync("Welcome to It-school Ruby on Brain!"));
 
-async Task HandleRequst(HttpContext context) => await context.Response.WriteAsync("Welcome to It-school Ruby on Brain!");
-app.Run(HandleRequst);  // Добавление компонента middleware с помощью отдельного метода
+// async Task HandleRequst(HttpContext context) => await context.Response.WriteAsync("Welcome to It-school Ruby on Brain!");
+// app.Run(HandleRequst);  // Добавление компонента middleware с помощью отдельного метода
+
+/*
+    ОТПРАВКА ОТВЕТА (используя объект HttpResponse)
+    ------------------------------
+    Способ: context.Response.WriteAsync() 
+    Параметры: данные, кодировка
+ */
+
+app.Run(WelcomeRequst);
+async Task WelcomeRequst(HttpContext context)
+{
+    var response = context.Response;
+    response.Headers.ContentLanguage = "ru-RU";
+    response.Headers.ContentType = "text/html; charset=utf-8";
+    await response.WriteAsync("<h1>Добро пожаловать в It-школу Ruby on Brain!</h1>", System.Text.Encoding.UTF8); // кодировка необязательно, т.к. мы указали ее ранее в ответе
+}
 
 // Запуск приложения - метод .Run()
 app.Run();
