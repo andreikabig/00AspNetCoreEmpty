@@ -60,6 +60,7 @@ var app = builder.Build();
         2. Отдельные классы
             * класс - делегат RequestDelegate
             * принимает объект HttpContext (при получении запроса формируется объект HtppContext с информацией о запросе)
+            * возвращает - объект Task
                     
                     Свойства HttpContext:
                         * Connection - информация об установившемся подключении
@@ -86,10 +87,20 @@ var app = builder.Build();
         * метод обработки запроса
  */
 
-app.MapGet("/welcome", () => "Добро пожаловать в It-школу Ruby on Brain!");
-
 // Добавление встроенного компонента middleware
-app.UseWelcomePage();
+// app.UseWelcomePage();
+
+
+/*
+    ДОБАВЛЕНИЕ middleware с использованием метода .Run()
+    ----------------------------------------------------
+    Добавляет: терминальные компоненты - завершают обработку запроса
+    Параметр: делегат RequstDelegate, принимающий HttpRequest, возвращающий Task
+
+    ПРИМЕЧАНИЕ: НЕ ПЕРЕДАЕТ ЗАПРОС НА ОБРАБОТКУ ПО КОНВЕЙЕРУ! 
+*/
+app.Run(async (context) => await context.Response.WriteAsync("Welcome to It-school Ruby on Brain!"));
+
 
 // Запуск приложения - метод .Run()
 app.Run();
