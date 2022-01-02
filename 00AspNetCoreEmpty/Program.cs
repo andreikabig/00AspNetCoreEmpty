@@ -25,6 +25,8 @@
         * WebHost - объект IWebHostBuilder - настройка отдельных настроек сервера
  */
 
+using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -107,9 +109,24 @@ app.Run(WelcomeRequst);
 async Task WelcomeRequst(HttpContext context)
 {
     var response = context.Response;
+    var request = context.Request;
+
     response.Headers.ContentLanguage = "ru-RU";
     response.Headers.ContentType = "text/html; charset=utf-8";
-    await response.WriteAsync("<h1>Добро пожаловать в It-школу Ruby on Brain!</h1>", System.Text.Encoding.UTF8); // кодировка необязательно, т.к. мы указали ее ранее в ответе
+
+    if (request.Path == "/request")
+    {
+        StringBuilder stringBuilder = new StringBuilder("<table>");
+
+        foreach (var header in request.Headers)
+            stringBuilder.Append($"<tr><td>{header.Key}</td><td>{header.Value}</td></tr>");
+
+        await response.WriteAsync(stringBuilder.ToString());
+    }
+    else if (request.Path == "/")
+        await response.WriteAsync("<h1>Добро пожаловать в It-школу Ruby on Brain!</h1>", System.Text.Encoding.UTF8); // кодировка необязательно, т.к. мы указали ее ранее в ответе
+    else
+        await response.WriteAsync($"Извините, но маршрута {request.Path} нет на нашем сайте!");
 }
 
 // Запуск приложения - метод .Run()
