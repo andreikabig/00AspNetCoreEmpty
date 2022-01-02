@@ -121,10 +121,26 @@ async Task WelcomeRequst(HttpContext context)
         foreach (var header in request.Headers)
             stringBuilder.Append($"<tr><td>{header.Key}</td><td>{header.Value}</td></tr>");
 
+        stringBuilder.Append("</table>");
+
         await response.WriteAsync(stringBuilder.ToString());
     }
     else if (request.Path == "/")
         await response.WriteAsync("<h1>Добро пожаловать в It-школу Ruby on Brain!</h1>", System.Text.Encoding.UTF8); // кодировка необязательно, т.к. мы указали ее ранее в ответе
+    else if (request.Path == "/show")
+    {
+        var query = request.Query;
+
+        StringBuilder stringBuilder = new StringBuilder("<h2>Параметры строки запроса</h2><table>");
+        stringBuilder.Append($"<tr><td>Параметр</td><td>Значение</td></tr>");
+
+        foreach (var param in request.Query)
+            stringBuilder.Append($"<tr><td>{param.Key}</td><td>{param.Value}</td></tr>");
+
+        stringBuilder.Append("</table>");
+
+        await response.WriteAsync(stringBuilder.ToString());
+    }
     else
         await response.WriteAsync($"Извините, но маршрута {request.Path} нет на нашем сайте!");
 }
