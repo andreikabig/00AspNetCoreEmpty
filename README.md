@@ -1,7 +1,7 @@
 # 00AspNetCoreEmpty
 Проект для изучения фреймворка ASP.NET Core с нуля.
 
-##Устройство проекта ASP.NET Core
+## Устройство проекта ASP.NET Core
 * Connected Services
   > Подключенные сервисы Azure
 * Dependencies
