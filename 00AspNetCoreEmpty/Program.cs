@@ -153,6 +153,26 @@ async Task WelcomeRequst(HttpContext context)
         response.Headers.ContentDisposition = "attachment; filename=image.png";
         await response.SendFileAsync(@"Images\logo.png");
     }
+    else if (request.Path == "/register")
+    {
+        await response.SendFileAsync(@"Views\Register.html");
+    }
+    else if (request.Path == "/postuser")
+    {
+        var form = request.Form;
+
+        string name = form["name"];
+        string surname = form["surname"];
+        string password = form["password"];
+        string email = form["email"];
+
+        await response.WriteAsync($"<p><h1>Отправленные данные: </h1></p>" +
+            $"<p>Name: {name}</p>"+
+            $"<p>Surname: {surname}</p>"+
+            $"<p>Password: {password}</p>"+
+            $"<p>Login: {email}</p>");
+
+    }
     else
         await response.WriteAsync($"Извините, но маршрута {request.Path} нет на нашем сайте!");
 }
