@@ -193,13 +193,24 @@ async Task WelcomeRequst(HttpContext context)
             $"{langs}");
 
     }
-    else if (request.Path == "/api/person")
+    else if (request.Path == "/api/person/post")    // Обработка пост-запроса
     {
-        Person person = new ("Андрей", 21);
+        var responseText = "Некорректные данные";   // Сообщение по умолчанию
 
-        // Ответ в json (person)
-        await response.WriteAsJsonAsync(person);
+        // Если в запросе нам отправляется json файл
+        if (request.HasJsonContentType())
+        {
+            // Десерилизация данных (форма -> в объект)
+            var person = await request.ReadFromJsonAsync<Person>();
+
+            // Если класс не пуст
+            if (person != null)
+                responseText = $"Name: {person.Name}, Age: {person.Age}";   // меняем сообщение на данные
+        }
+        await response.WriteAsJsonAsync(new {text = responseText}); // отправляем анонимный класс в json формате
     }
+    else if (request.Path == "/api/person") // Обработка get-запроса 
+        await response.SendFileAsync(@"Views\User.html");
     else
         response.Redirect("/");
 }

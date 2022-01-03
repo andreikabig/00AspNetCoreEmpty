@@ -49,7 +49,44 @@
     <p>
         <h1>Ruby on Brain</h1>
     </p>
-    Добро пожаловать в нашу It-школу!
+    
+    <h2>Отправка данных на сервер: </h2> <br />
+    <div id="message"></div>
+    <form>
+        <p>Заполните поля ниже: </p>
+
+        <p>
+            Имя ученика: <br />
+            <input name="userName" id="idUserName" />
+        </p>
+
+        <p>
+            Возраст ученика: <br />
+            <input name="userAge" id="idUserAge" />
+        </p>
+
+        <button id="sendBtn">Отправить</button>
+
+    </form>
+
+    <script>
+        document.getElementById("sendBtn").addEventListener("click", send); // Ожидаем события нажатия кнопки на отправку
+        async function send(e) {    // фунция отправки
+            e.preventDefault(); 
+            const response = await fetch("/api/person/post", // fetch - отправка запросов на сервер
+                {
+                    method: "POST",
+                    headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        name: document.getElementById("idUserName").value,
+                        age: document.getElementById("idUserAge").value
+                    })
+                }
+            );
+            const message = await response.json();  // ожидание получения ответа в json формате
+            document.getElementById("message").innerText = message.text;    // прописываем, что пришло в ответ в ключе text
+        }
+    </script>
     
 
 </body>
