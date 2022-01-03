@@ -193,9 +193,20 @@ async Task WelcomeRequst(HttpContext context)
             $"{langs}");
 
     }
+    else if (request.Path == "/api/person")
+    {
+        Person person = new ("Андрей", 21);
+
+        // Ответ в json (person)
+        await response.WriteAsJsonAsync(person);
+    }
     else
         response.Redirect("/");
 }
 
 // Запуск приложения - метод .Run()
 app.Run();
+
+
+// record - неизменяемый класс (однако свойства можно спокойно изменять, для обратного нужно прописывать вместо set -> init)
+public record Person(string Name, int Age); 
