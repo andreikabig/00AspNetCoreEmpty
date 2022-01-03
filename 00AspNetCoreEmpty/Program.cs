@@ -141,6 +141,12 @@ async Task WelcomeRequst(HttpContext context)
 
         await response.WriteAsync(stringBuilder.ToString());
     }
+    else if (request.Path == "/image")
+    {
+        response.Headers.ContentType = "image/png; charset=utf-8";
+        await response.SendFileAsync(@"Images\logo.png");
+    }
+        
     else
         await response.WriteAsync($"Извините, но маршрута {request.Path} нет на нашем сайте!");
 }
