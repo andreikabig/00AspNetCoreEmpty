@@ -26,6 +26,7 @@
  */
 
 using System.Text;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -200,8 +201,14 @@ async Task WelcomeRequst(HttpContext context)
         // Если в запросе нам отправляется json файл
         if (request.HasJsonContentType())
         {
-            // Десерилизация данных (форма -> в объект)
-            var person = await request.ReadFromJsonAsync<Person>();
+            // Определим параметры сериализации/десериализации
+            var jsonoptions = new JsonSerializerOptions();
+
+            // Добавляем конвертер кода .json в объект типа Person. в коллекцию ковертеров
+            jsonoptions.Converters.Add(new PersonConverter());
+
+            // Десерилизация данных (форма -> в объект) с помощью нашего конвертера
+            var person = await request.ReadFromJsonAsync<Person>(jsonoptions);
             /*
              ВОЗМОЖНЫЕ ПРОБЛЕМЫ:
                 Невозможно десирилизовать полученные данные - например, ошибка формата данных или несовпадение ключей полученного файла и свойств объекта
