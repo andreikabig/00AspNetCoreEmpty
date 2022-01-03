@@ -142,7 +142,7 @@ async Task WelcomeRequst(HttpContext context)
         await response.WriteAsync(stringBuilder.ToString());
     }
     else
-        await response.WriteAsync($"Извините, но маршрута {request.Path} нет на нашем сайте!");
+        response.Redirect("/"); // Метод переадресации на
 }
 
 // Запуск приложения - метод .Run()
