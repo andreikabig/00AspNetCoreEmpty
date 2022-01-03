@@ -172,7 +172,7 @@ async Task WelcomeRequst(HttpContext context)
 
         for (int i = 0; i < topics.Count(); i++)
         {
-            stringBuilder.Append($"<tr><td>{i+1}.</td><td>{topics[i]}</td></tr>");
+            stringBuilder.Append($"<tr><td>{i + 1}.</td><td>{topics[i]}</td></tr>");
         }
 
         stringBuilder.Append("</table>");
@@ -181,12 +181,12 @@ async Task WelcomeRequst(HttpContext context)
 
         foreach (string language in languages)
             langs += $"{language} ";
-        
+
 
         await response.WriteAsync($"<p><h1>Отправленные данные: </h1></p>" +
-            $"<p>Name: {name}</p>"+
-            $"<p>Surname: {surname}</p>"+
-            $"<p>Password: {password}</p>"+
+            $"<p>Name: {name}</p>" +
+            $"<p>Surname: {surname}</p>" +
+            $"<p>Password: {password}</p>" +
             $"<p>Login: {email}</p><br />" +
             $"Интересующие тематики: <br />" +
             $"{stringBuilder}<br />" +
@@ -194,7 +194,7 @@ async Task WelcomeRequst(HttpContext context)
 
     }
     else
-        await response.WriteAsync($"Извините, но маршрута {request.Path} нет на нашем сайте!");
+        response.Redirect("/");
 }
 
 // Запуск приложения - метод .Run()
