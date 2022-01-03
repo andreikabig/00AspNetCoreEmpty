@@ -166,6 +166,7 @@ async Task WelcomeRequst(HttpContext context)
         string password = form["password"];
         string email = form["email"];
         string[] topics = form["topics"];
+        string[] languages = form["languages"];
 
         StringBuilder stringBuilder = new StringBuilder("<table>");
 
@@ -176,13 +177,20 @@ async Task WelcomeRequst(HttpContext context)
 
         stringBuilder.Append("</table>");
 
+        string langs = "языки программировани€: ";
+
+        foreach (string language in languages)
+            langs += $"{language} ";
+        
+
         await response.WriteAsync($"<p><h1>ќтправленные данные: </h1></p>" +
             $"<p>Name: {name}</p>"+
             $"<p>Surname: {surname}</p>"+
             $"<p>Password: {password}</p>"+
             $"<p>Login: {email}</p><br />" +
             $"»нтересующие тематики: <br />" +
-            $"{stringBuilder}");
+            $"{stringBuilder}<br />" +
+            $"{langs}");
 
     }
     else
