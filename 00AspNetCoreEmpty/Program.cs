@@ -127,7 +127,7 @@ async Task WelcomeRequst(HttpContext context)
     }
     else if (request.Path == "/")
         await response.SendFileAsync(@"Views\Index.html");
-        //await response.WriteAsync("<h1>ƒобро пожаловать в It-школу Ruby on Brain!</h1>", System.Text.Encoding.UTF8); // кодировка необ€зательно, т.к. мы указали ее ранее в ответе
+    //await response.WriteAsync("<h1>ƒобро пожаловать в It-школу Ruby on Brain!</h1>", System.Text.Encoding.UTF8); // кодировка необ€зательно, т.к. мы указали ее ранее в ответе
     else if (request.Path == "/show")
     {
         var query = request.Query;
@@ -147,7 +147,12 @@ async Task WelcomeRequst(HttpContext context)
         response.Headers.ContentType = "image/png; charset=utf-8";
         await response.SendFileAsync(@"Images\logo.png");
     }
-        
+    else if (request.Path == "/download")
+    {
+        response.Headers.ContentType = "image/png; charset=utf-8";
+        response.Headers.ContentDisposition = "attachment; filename=image.png";
+        await response.SendFileAsync(@"Images\logo.png");
+    }
     else
         await response.WriteAsync($"»звините, но маршрута {request.Path} нет на нашем сайте!");
 }
