@@ -126,7 +126,8 @@ async Task WelcomeRequst(HttpContext context)
         await response.WriteAsync(stringBuilder.ToString());
     }
     else if (request.Path == "/")
-        await response.WriteAsync("<h1>Добро пожаловать в It-школу Ruby on Brain!</h1>", System.Text.Encoding.UTF8); // кодировка необязательно, т.к. мы указали ее ранее в ответе
+        await response.SendFileAsync(@"Views\Index.html");
+        //await response.WriteAsync("<h1>Добро пожаловать в It-школу Ruby on Brain!</h1>", System.Text.Encoding.UTF8); // кодировка необязательно, т.к. мы указали ее ранее в ответе
     else if (request.Path == "/show")
     {
         var query = request.Query;
