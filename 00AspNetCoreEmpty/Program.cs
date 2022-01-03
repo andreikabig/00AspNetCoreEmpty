@@ -165,12 +165,24 @@ async Task WelcomeRequst(HttpContext context)
         string surname = form["surname"];
         string password = form["password"];
         string email = form["email"];
+        string[] topics = form["topics"];
+
+        StringBuilder stringBuilder = new StringBuilder("<table>");
+
+        for (int i = 0; i < topics.Count(); i++)
+        {
+            stringBuilder.Append($"<tr><td>{i+1}.</td><td>{topics[i]}</td></tr>");
+        }
+
+        stringBuilder.Append("</table>");
 
         await response.WriteAsync($"<p><h1>Отправленные данные: </h1></p>" +
             $"<p>Name: {name}</p>"+
             $"<p>Surname: {surname}</p>"+
             $"<p>Password: {password}</p>"+
-            $"<p>Login: {email}</p>");
+            $"<p>Login: {email}</p><br />" +
+            $"Интересующие тематики: <br />" +
+            $"{stringBuilder}");
 
     }
     else
