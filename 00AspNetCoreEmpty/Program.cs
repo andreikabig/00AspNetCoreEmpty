@@ -23,33 +23,24 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
 /*
-    .UseWhen() - на основании некоторого условия позволяет создавать ответвления конвейера при обработке запроса
+    .MapWhen() - на основании некоторого условия позволяет создавать ответвления конвейера при обработке запроса
         
         Параметры:
                     1. делегат Func<HttpContext, bool> - некоторое условие, которому должен соответствовать запрос
                                     Делегат принимает: HttpContext
                                     Делегат возвращает: bool - соответствие запроса условию
                     2. делегат Action<IApplicationBuilder> - действия над объектом IApplicationBuilder, который передается в делегат в качестве параметра
+        
+        ПРИМЕЧАНИЕ: В отличие от .UseWhen() использует терминальный компонент middleware
        
  */
 
-
-app.UseWhen(context => context.Request.Path == "/time",
-    appBuilder =>   // Ответвление конвейера при истинности верхнего условия
+app.MapWhen(context => context.Request.Path == "/time",
+    appBuilder => appBuilder.Run(async context =>
     {
         var time = DateTime.Now.ToShortTimeString();
-
-        appBuilder.Use(async (context, next) =>
-        {
-            Console.WriteLine($"Time: {time}");
-            await next.Invoke();
-        });
-
-        appBuilder.Run(async (context) =>
-        {
-            await context.Response.WriteAsync($"Time: {time}");
-        });
-    }
+        await context.Response.WriteAsync(time);
+    })
     );
 
 app.Run(async (context) =>
