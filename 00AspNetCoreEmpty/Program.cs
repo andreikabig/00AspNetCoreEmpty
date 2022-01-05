@@ -22,54 +22,32 @@ var builder = WebApplication.CreateBuilder(args);
 // Создаем объект WebApplication на основе билдера
 var app = builder.Build();
 
+/*
+    .Use() - добавляет компоненнт MiddleWare, который позволяет передать обработку запроса далее следующим в конвейере компонентам
+       
+        Принимает: действие с двумя параметрами, возвращающее объект Task
+                
+                Параметры делегата:
+                                    * объект HttpContext
+                                    * объект Func<Task> или RequestDelegate - представляет следующий в конвейере компонент middleware, которому будет передана обработка запроса
+ */
 
-// Добавление middleware приложения (который загружает файлы на сервер)
-app.Run(UploadFiles);
+string date = "";
 
-async Task UploadFiles(HttpContext context)
-{
-    var request = context.Request;
-    var response = context.Response;
-
-    response.ContentType = "text/html; charset=utf-8";
-
-    var path = request.Path;
+app.Use(ForUse);
 
 
-    if (request.Method == "POST" && path == "/upload")
-    {
-        IFormFileCollection files = request.Form.Files;
-
-        // Путь к папке, в которую будут сохраняться файлы
-        var uploadPath = $"{Directory.GetCurrentDirectory()}/Uploads";
-
-        // Если такой папки нет, то создаем ее
-        if (!Directory.Exists(uploadPath))
-            Directory.CreateDirectory(uploadPath);
-
-        foreach (var file in files)
-        {
-            // Путь к файлу
-            string fullPath = $"{uploadPath}/{file.FileName}";
-
-            // Сохраняем файл в папку
-            using (var fileStram = new FileStream(fullPath, FileMode.Create))
-            {
-                await file.CopyToAsync(fileStram);  // Копирует файл в поток
-            }
-        }
-
-        await response.WriteAsync("Файл успешно загружен!");
-    }
-    else 
-    {
-        await response.SendFileAsync("Views/index.html");
-    }
-}
+app.Run(ForRun);
 
 app.Run();
 
 
+async Task ForUse(HttpContext context, Func<Task> next)
+{
+    date = DateTime.Now.ToShortDateString();
+    await next.Invoke();    // Invoke - вызов делегата
+    Console.WriteLine("Date " + date);
+}
 
-
+async Task ForRun(HttpContext context) => await context.Response.WriteAsync($"Date: {date}");
 

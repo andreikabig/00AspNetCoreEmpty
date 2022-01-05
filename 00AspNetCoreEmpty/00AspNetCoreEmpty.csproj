@@ -7,8 +7,4 @@
     <RootNamespace>_00AspNetCoreEmpty</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Images\" />
-  </ItemGroup>
-
 </Project>
