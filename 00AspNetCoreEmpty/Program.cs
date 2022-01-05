@@ -45,7 +45,7 @@ app.Run();
 async Task ForUse(HttpContext context, Func<Task> next)
 {
     date = DateTime.Now.ToShortDateString();
-    await next.Invoke();    // Invoke - вызов делегата
+    await next.Invoke();    // Invoke - вызов делегата (следующий в конвейере компонент - ForRun в .Run())
     Console.WriteLine("Date " + date);
 }
 
