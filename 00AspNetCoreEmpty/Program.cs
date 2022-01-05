@@ -30,6 +30,8 @@ var app = builder.Build();
                 Параметры делегата:
                                     * объект HttpContext
                                     * объект Func<Task> или RequestDelegate - представляет следующий в конвейере компонент middleware, которому будет передана обработка запроса
+                                            
+                                        P.S. если используем RequestDelegate, то в Invoke необходимо передать объект HttpContext
  */
 
 string date = "";
