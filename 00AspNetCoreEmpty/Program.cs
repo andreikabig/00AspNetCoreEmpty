@@ -44,6 +44,11 @@ app.Run();
 
 async Task ForUse(HttpContext context, Func<Task> next)
 {
+    /*
+            ПРИМЕЧАНИЕ: не рекомендуется вызывать метод next.Invoke() после response.WriteAsync()
+                        компонент должен либо вызывать следующий делегат, либо генерировать ответ с помощью .WriteAsync(),
+                        но не два действия одновременно!!!
+     */
     date = DateTime.Now.ToShortDateString();
     await next.Invoke();    // Invoke - вызов делегата (следующий в конвейере компонент - ForRun в .Run())
     Console.WriteLine("Date " + date);
