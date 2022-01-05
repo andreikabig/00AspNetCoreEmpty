@@ -47,6 +47,18 @@ app.Map("/time", appBuilder =>
         });
     });
 
+// Примеры вложенных методов Map
+app.Map("/home", appBuilder =>
+{
+    // /home/index
+    appBuilder.Map("/index", IndexPage);
+    appBuilder.Map("/about", AboutPage);
+
+    // /home
+    appBuilder.Run(async (context) => await context.Response.WriteAsync("Home page")) ;
+
+});
+
 // Ветки для разных путей
 // app.Map("/index", ...)
 
@@ -58,6 +70,16 @@ app.Run(async (context) =>
 
 app.Run();
 
+
+void IndexPage(IApplicationBuilder appBuilder)
+{
+    appBuilder.Run(async context => await context.Response.WriteAsync("Index page"));
+}
+
+void AboutPage(IApplicationBuilder appBuilder)
+{
+    appBuilder.Run(async context => await context.Response.WriteAsync("About page"));
+}
 
 
 
