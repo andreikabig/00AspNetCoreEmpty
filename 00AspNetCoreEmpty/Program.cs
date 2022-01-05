@@ -16,6 +16,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Linq;
 using _00AspNetCoreEmpty.Middlewares;
+using _00AspNetCoreEmpty.Extensions;
 
 // Создаем объект builder приложения WebApplicationBuilder
 var builder = WebApplication.CreateBuilder(args);
@@ -23,7 +24,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Создаем объект WebApplication на основе билдера
 var app = builder.Build();
 
-app.UseMiddleware<TokenMiddleware>();
+//app.UseMiddleware<TokenMiddleware>();
+
+app.UseToken(); // Используем метод расширения
 
 app.Run(async (context) => {
     context.Response.ContentType = "text/html; charset=UTF-8";
