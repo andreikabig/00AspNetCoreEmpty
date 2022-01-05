@@ -14,7 +14,7 @@
         <h4>Загрузка изображений</h4>
     </p>
 
-    <form action="upload" method="post">
+    <form action="upload" method="post" enctype="multipart/form-data">  <!--enctype - способ кодирования данных при отправке на сервер, обычно не добавляется, но для файлов необходим-->
         <input type="file" name="uploads" /> <br />
         
         <input type="submit" value="Загрузить" />

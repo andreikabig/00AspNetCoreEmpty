@@ -31,6 +31,8 @@ async Task UploadFiles(HttpContext context)
     var request = context.Request;
     var response = context.Response;
 
+    response.ContentType = "text/html; charset=utf-8";
+
     var path = request.Path;
 
 
@@ -39,7 +41,7 @@ async Task UploadFiles(HttpContext context)
         IFormFileCollection files = request.Form.Files;
 
         // Путь к папке, в которую будут сохраняться файлы
-        var uploadPath = $"{Directory.GetCurrentDirectory()}/Images";
+        var uploadPath = $"{Directory.GetCurrentDirectory()}/Uploads";
 
         // Если такой папки нет, то создаем ее
         if (!Directory.Exists(uploadPath))
@@ -53,7 +55,7 @@ async Task UploadFiles(HttpContext context)
             // Сохраняем файл в папку
             using (var fileStram = new FileStream(fullPath, FileMode.Create))
             {
-                await file.CopyToAsync(fileStram);
+                await file.CopyToAsync(fileStram);  // Копирует файл в поток
             }
         }
 
@@ -61,12 +63,11 @@ async Task UploadFiles(HttpContext context)
     }
     else 
     {
-        response.ContentType = "text/html; charset=utf-8";
         await response.SendFileAsync("Views/index.html");
     }
 }
 
-
+app.Run();
 
 
 
