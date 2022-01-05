@@ -23,25 +23,32 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
 /*
-    .MapWhen() - на основании некоторого условия позволяет создавать ответвления конвейера при обработке запроса
+    .Map() - создание ветки конвейера, которая обрабатывает запрос по определенному пути
         
         Параметры:
-                    1. делегат Func<HttpContext, bool> - некоторое условие, которому должен соответствовать запрос
-                                    Делегат принимает: HttpContext
-                                    Делегат возвращает: bool - соответствие запроса условию
-                    2. делегат Action<IApplicationBuilder> - действия над объектом IApplicationBuilder, который передается в делегат в качестве параметра
-        
-        ПРИМЕЧАНИЕ: В отличие от .UseWhen() использует терминальный компонент middleware
+                    1. Путь запроса, с которым сопоставляется ветка
+                    2. делегат Action<IApplicationBuilder> - действия над объектом IApplicationBuilder, в котором создается ветка конвейера
        
  */
 
-app.MapWhen(context => context.Request.Path == "/time",
-    appBuilder => appBuilder.Run(async context =>
+app.Map("/time", appBuilder =>
     {
         var time = DateTime.Now.ToShortTimeString();
-        await context.Response.WriteAsync(time);
-    })
-    );
+
+        appBuilder.Use(async (context, next) =>
+        {
+            Console.WriteLine(time);
+            await next.Invoke();
+        });
+
+        appBuilder.Run(async (context) =>
+        {
+            await context.Response.WriteAsync(time);
+        });
+    });
+
+// Ветки для разных путей
+// app.Map("/index", ...)
 
 app.Run(async (context) =>
 {
