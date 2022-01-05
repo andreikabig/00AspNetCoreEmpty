@@ -26,7 +26,7 @@ var app = builder.Build();
 
 //app.UseMiddleware<TokenMiddleware>();
 
-app.UseToken(); // Используем метод расширения
+app.UseToken("12345678"); // Используем метод расширения
 
 app.Run(async (context) => {
     context.Response.ContentType = "text/html; charset=UTF-8";
