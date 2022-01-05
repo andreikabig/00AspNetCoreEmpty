@@ -23,38 +23,44 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
 /*
-    .Use() - добавляет компоненнт MiddleWare, который позволяет передать обработку запроса далее следующим в конвейере компонентам
+    .UseWhen() - на основании некоторого условия позволяет создавать ответвления конвейера при обработке запроса
+        
+        Параметры:
+                    1. делегат Func<HttpContext, bool> - некоторое условие, которому должен соответствовать запрос
+                                    Делегат принимает: HttpContext
+                                    Делегат возвращает: bool - соответствие запроса условию
+                    2. делегат Action<IApplicationBuilder> - действия над объектом IApplicationBuilder, который передается в делегат в качестве параметра
        
-        Принимает: действие с двумя параметрами, возвращающее объект Task
-                
-                Параметры делегата:
-                                    * объект HttpContext
-                                    * объект Func<Task> или RequestDelegate - представляет следующий в конвейере компонент middleware, которому будет передана обработка запроса
-                                            
-                                        P.S. если используем RequestDelegate, то в Invoke необходимо передать объект HttpContext
  */
 
-string date = "";
 
-app.Use(ForUse);
+app.UseWhen(context => context.Request.Path == "/time",
+    appBuilder =>   // Ответвление конвейера при истинности верхнего условия
+    {
+        var time = DateTime.Now.ToShortTimeString();
 
+        appBuilder.Use(async (context, next) =>
+        {
+            Console.WriteLine($"Time: {time}");
+            await next.Invoke();
+        });
 
-app.Run(ForRun);
+        appBuilder.Run(async (context) =>
+        {
+            await context.Response.WriteAsync($"Time: {time}");
+        });
+    }
+    );
+
+app.Run(async (context) =>
+{
+    await context.Response.WriteAsync("Welcome to RubyOnBrain!");
+});
+
 
 app.Run();
 
 
-async Task ForUse(HttpContext context, Func<Task> next)
-{
-    /*
-            ПРИМЕЧАНИЕ: не рекомендуется вызывать метод next.Invoke() после response.WriteAsync()
-                        компонент должен либо вызывать следующий делегат, либо генерировать ответ с помощью .WriteAsync(),
-                        но не два действия одновременно!!!
-     */
-    date = DateTime.Now.ToShortDateString();
-    await next.Invoke();    // Invoke - вызов делегата (следующий в конвейере компонент - ForRun в .Run())
-    Console.WriteLine("Date " + date);
-}
 
-async Task ForRun(HttpContext context) => await context.Response.WriteAsync($"Date: {date}");
+
 
