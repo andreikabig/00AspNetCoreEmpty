@@ -21,16 +21,49 @@ using _00AspNetCoreEmpty.Extensions;
 // Создаем объект builder приложения WebApplicationBuilder
 var builder = WebApplication.CreateBuilder(args);
 
+// Регистрация сервиса с помощью метода .AddНазваниеСервиса();
+builder.Services.AddMvc(); // добавляет в проект сервисы MVC, благодаря чему мы сможем их использовать в приложении
+
 // Создаем объект WebApplication на основе билдера
 var app = builder.Build();
 
-//app.UseMiddleware<TokenMiddleware>();
+/*
+    Для установки зависимостей используются специальные контейнеры - IoC-контейнеры (Inversion of Control)
+        Цель контеннйеров: установка зависимостей между абстракциями и конкретными объекта, управление созданием этих объектов
 
-//app.UseToken("12345678"); // Используем метод расширения
+    ASP.NET Core имеет встроенный контейнер внедрения зависимостей - представлен интерфейсом IServiceProvieder
+    Зависимость = сервис
+    
+    Цель контейнера: отвечать за сопоставление зависимостей с конкретными типами,
+                     внедрнеие зависимостей в различные объекты
+    
+    WebApplicationBuilder - свойство Services (объект IServiceCollection)
+    Задача: управление сервисами
+ 
+ */
 
-app.UseTokenAuthentication();
-app.UseToken("12345");
-app.UseMyRouting();
+var services = builder.Services;
+
+// Сервисы по умолчанию
+app.Run(async (context) =>
+{
+    var sb = new StringBuilder();
+    sb.Append("<h1>Все сервисы</h1>");
+    sb.Append("<table>");
+    sb.Append("<tr><th>Тип</th><th>Lifetime</th><th>Реализация</th></tr>");
+    foreach (var svc in services)
+    {
+        sb.Append("<tr>");
+        sb.Append($"<td>{svc.ServiceType.FullName}</td>");
+        sb.Append($"<td>{svc.Lifetime}</td>");
+        sb.Append($"<td>{svc.ImplementationType?.FullName}</td>");
+        sb.Append("</tr>");
+    }
+    sb.Append("</table>");
+    context.Response.ContentType = "text/html;charset=utf-8";
+    await context.Response.WriteAsync(sb.ToString());
+});
+
 
 
 app.Run();
